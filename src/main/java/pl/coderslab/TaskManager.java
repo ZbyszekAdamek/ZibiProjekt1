@@ -32,11 +32,12 @@ public class TaskManager {
                 dodajZadanie();
                 break;
             case "usuń":
-
+                usunZadanie(zadaniaPlik, czyJestWiekszeLubRowneZero());
+                System.out.println("Wartość została poprawnie usunięta.");
                 break;
 
             case "pokaż listę":
-
+                pokazListeZadan(zadaniaPlik);
                 break;
 
             case "wyjdź":
@@ -68,6 +69,10 @@ public class TaskManager {
 
         zadaniaPlik = Arrays.copyOf(zadaniaPlik, zadaniaPlik.length + 1);
 
+        zadaniaPlik[zadaniaPlik.length-1] = new String[0];
+        zadaniaPlik[zadaniaPlik.length-1][0] = opisZadania;
+        zadaniaPlik[zadaniaPlik.length-1][1] = dataWykonania;
+        zadaniaPlik[zadaniaPlik.length-1][2] = istotnoscZadania;
 
     }
 
@@ -93,6 +98,31 @@ public class TaskManager {
             e.printStackTrace();
         }
         return tab;
+    }
+    public static void pokazListeZadan(String[][] tablica){
+        for (int i = 0; i < tablica.length; i++) {
+            System.out.print(tablica[i] + " ");
+            for (int j = 0; j < tablica[i].length; j++) {
+                System.out.println(tablica[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+    }
+    public static void usunZadanie(String[][]tablicaDwuwymiarowa, int index){
+        try{
+            if(index < tablicaDwuwymiarowa.length){
+                zadaniaPlik = ArrayUtils.remove(tablicaDwuwymiarowa,index);
+            }
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            e.printStackTrace();
+            System.out.println("Indeks wyszedł poza tablicę");
+        }
+
+    }
+    public static int czyJestWiekszeLubRowneZero(int wartoscLiczbowa){
+
     }
 
 
