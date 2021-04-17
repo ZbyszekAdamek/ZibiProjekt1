@@ -18,36 +18,38 @@ public class TaskManager {
     static String[][] zadaniaPlik;
 
     public static void main(String[] args) {
-        wczytajDanePlikuDoTablicy(plik);
+        zadaniaPlik = wczytajDanePlikuDoTablicy(plik);
         wyswietlOpcje(opcjeProgramu);
 
         Scanner uzytkownik = new Scanner(System.in);
-        String decyzja = uzytkownik.nextLine();
-        while(uzytkownik.hasNext()){
-            decyzja = uzytkownik.nextLine();
-        }
+        while (uzytkownik.hasNext()) {
+            String decyzja = uzytkownik.nextLine();
 
-        switch (decyzja) {
-            case "dodaj":
-                dodajZadanie();
-                break;
-            case "usuń":
-                usunZadanie(zadaniaPlik, czyJestWiekszeLubRowneZero(0));//TODO do zrobienia
-                System.out.println("Wartość została poprawnie usunięta.");
-                break;
+            switch (decyzja) {
 
-            case "pokaż listę":
-                pokazListeZadan(zadaniaPlik);
-                break;
+                case "pokaż listę":
+                    pokazListeZadan(zadaniaPlik);
+                    break;
 
+                case "dodaj":
+                    dodajZadanie();
+                    break;
 
-            case "wyjdź":
-                System.out.println("ewychodze");
-                break;
+                case "usuń":
+                    usunZadanie(zadaniaPlik, wybierzLiczbe());
+                    System.out.println("Wartość została poprawnie usunięta.");
+                    break;
 
-            default:
-                System.out.println("Wybierz poprawną opcję");
+                case "wyjdź":
+                    zapiszDaneDoPliku(zadaniaPlik, plik);
+                    System.out.println(ConsoleColors.RED + "Pa, pa");
+                    System.exit(0);
+                    break;
 
+                default:
+                    System.out.println("Wybierz poprawną opcję");
+            }
+            wyswietlOpcje(opcjeProgramu);
         }
     }
 
@@ -58,25 +60,6 @@ public class TaskManager {
             System.out.println(opcja);
         }
     }
-
-    public static void dodajZadanie() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Podaj opis zadania: ");
-        String opisZadania = scanner.nextLine();
-        System.out.println("Podaj datę wykonania zadania: ");
-        String dataWykonania = scanner.nextLine();
-        System.out.println("Czy to zadanie jest ważne?tak/nie");
-        String istotnoscZadania = scanner.nextLine();
-
-        zadaniaPlik = Arrays.copyOf(zadaniaPlik, zadaniaPlik.length + 1);
-
-        zadaniaPlik[zadaniaPlik.length-1] = new String[0];
-        zadaniaPlik[zadaniaPlik.length-1][0] = opisZadania;
-        zadaniaPlik[zadaniaPlik.length-1][1] = dataWykonania;
-        zadaniaPlik[zadaniaPlik.length-1][2] = istotnoscZadania;
-
-    }
-
 
     public static String[][] wczytajDanePlikuDoTablicy(String nazwaPliku) {
         Path naszPlik = Paths.get(nazwaPliku);
@@ -100,32 +83,77 @@ public class TaskManager {
         }
         return tab;
     }
-    public static void pokazListeZadan(String[][] tablica){
+
+    public static void pokazListeZadan(String[][] tablica) {
         for (int i = 0; i < tablica.length; i++) {
-            System.out.print(tablica[i] + " ");
+            System.out.print(i + " ");
             for (int j = 0; j < tablica[i].length; j++) {
-                System.out.println(tablica[i][j] + " ");
+                System.out.print(tablica[i][j] + " ");
             }
             System.out.println();
         }
-
     }
-    public static void usunZadanie(String[][]tablicaDwuwymiarowa, int index){
-        try{
-            if(index < tablicaDwuwymiarowa.length){
-                zadaniaPlik = ArrayUtils.remove(tablicaDwuwymiarowa,index);
+
+    public static void dodajZadanie() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Podaj opis zadania: ");
+        String opisZadania = scanner.nextLine();
+        System.out.println("Podaj datę wykonania zadania: ");
+        String dataWykonania = scanner.nextLine();
+        System.out.println("Czy to zadanie jest ważne?tak/nie");
+        String istotnoscZadania = scanner.nextLine();
+
+        zadaniaPlik = Arrays.copyOf(zadaniaPlik, zadaniaPlik.length + 1);
+
+        zadaniaPlik[zadaniaPlik.length - 1] = new String[3];
+        zadaniaPlik[zadaniaPlik.length - 1][0] = opisZadania;
+        zadaniaPlik[zadaniaPlik.length - 1][1] = dataWykonania;
+        zadaniaPlik[zadaniaPlik.length - 1][2] = istotnoscZadania;
+    }
+
+    public static void usunZadanie(String[][] tablicaDwuwymiarowa, int index) {
+        try {
+            if (index < tablicaDwuwymiarowa.length) {
+                zadaniaPlik = ArrayUtils.remove(tablicaDwuwymiarowa, index);
             }
-        }
-        catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
             System.out.println("Indeks wyszedł poza tablicę");
         }
-
-    }
-    public static int czyJestWiekszeLubRowneZero(int wartoscLiczbowa){
-
-        return 0;
     }
 
+    public static int wybierzLiczbe() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Wybierz liczbę do usunięcia");
+        String wybor = scanner.nextLine();
+        if (!jestWiekszeLubRowneZero(wybor)) {
+            System.out.println("Popraw wartość na większą lub równą zero.");
+            scanner.nextLine();
+        }
+        return Integer.parseInt(wybor);
 
+    }
+
+    public static boolean jestWiekszeLubRowneZero(String decyzja) {
+        if (NumberUtils.isParsable(decyzja)) {
+            return Integer.parseInt(decyzja) >= 0;
+        }
+        return false;
+    }
+
+    public static void zapiszDaneDoPliku(String[][] tablicaDwuwymiarowa, String plik) {
+        Path dir = Paths.get(plik);
+
+        String[] lines = new String[zadaniaPlik.length];
+        for (int i = 0; i < zadaniaPlik.length; i++) {
+            lines[i] = String.join(",", tablicaDwuwymiarowa[i]);
+        }
+        try {
+            Files.write(dir, Arrays.asList(lines));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
+
+
