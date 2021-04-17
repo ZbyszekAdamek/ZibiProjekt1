@@ -32,7 +32,7 @@ public class TaskManager {
                 dodajZadanie();
                 break;
             case "usuń":
-                usunZadanie(zadaniaPlik, czyJestWiekszeLubRowneZero());
+                usunZadanie(zadaniaPlik, czyJestWiekszeLubRowneZero(0));//TODO do zrobienia
                 System.out.println("Wartość została poprawnie usunięta.");
                 break;
 
@@ -123,6 +123,7 @@ public class TaskManager {
     }
     public static int czyJestWiekszeLubRowneZero(int wartoscLiczbowa){
 
+        return 0;
     }
 
 
