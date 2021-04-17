@@ -40,8 +40,9 @@ public class TaskManager {
                 pokazListeZadan(zadaniaPlik);
                 break;
 
-            case "wyjdź":
 
+            case "wyjdź":
+                System.out.println("ewychodze");
                 break;
 
             default:
