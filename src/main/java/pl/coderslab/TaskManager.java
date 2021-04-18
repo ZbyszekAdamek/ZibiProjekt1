@@ -33,6 +33,7 @@ public class TaskManager {
 
                 case "dodaj":
                     dodajZadanie();
+                    System.out.println("Zadanie zostałe dodane do listy.");
                     break;
 
                 case "usuń":
